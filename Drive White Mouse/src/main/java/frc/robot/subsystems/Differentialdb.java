@@ -37,6 +37,8 @@ import static frc.robot.Constants.MEASUREMENT.*;
 import static frc.robot.Constants.Joystick.*;
 import static frc.robot.Constants.PiAiDi.*;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
+
 public class Differentialdb extends SubsystemBase {
   /** Creates a new Drivetrain. */
   //Right Group
@@ -62,10 +64,14 @@ public class Differentialdb extends SubsystemBase {
   private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(gyro.getRotation2d()); 
   //Diferential
   private final DifferentialDrive drive = new DifferentialDrive(leftGroup, rightGroup);
- // private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(1, 3);
+ 
+  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(1, 3);
  
 
   public final Joystick controller = new Joystick(1);
+
+  private final SlewRateLimiter m_speedLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
   
   
@@ -90,7 +96,7 @@ public class Differentialdb extends SubsystemBase {
 
   }
   //Set the desire speed
-  /*public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
+ public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
     final double leftFeedforward = feedforward.calculate(speeds.leftMetersPerSecond);
     final double rightFeedforward = feedforward.calculate(speeds.rightMetersPerSecond);
 
@@ -103,7 +109,7 @@ public class Differentialdb extends SubsystemBase {
   public void drive(double xSpeed, double rot) { 
     var wheelSpeeds = kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
     setSpeeds(wheelSpeeds);    
-  }*/
+  }
 
 
   
@@ -113,7 +119,19 @@ public class Differentialdb extends SubsystemBase {
   public void periodic() {
       odometry.update(gyro.getRotation2d(), 
                       leftEncoder.getDistance(), rightEncoder.getDistance());
+      // Get the x speed. We are inverting this because controllers return
+    // negative values when we push forward.
+    final var xSpeed = -m_speedLimiter.calculate(controller.getRawAxis(1)) * kMaxSpeed;
+
+    // Get the rate of angular rotation. We are inverting this because we want a
+    // positive value when we pull to the left (remember, CCW is positive in
+    // mathematics). controllers return positive values when you pull to
+    // the right by default.
+    final var rot = -m_rotLimiter.calculate(controller.getRawAxis(0)) * kMaxAngularSpeed;
+
+    drive(xSpeed, rot);
   }
+
   //Return the current estimate pose of the robot
   public Pose2d getPose(){
     return odometry.getPoseMeters();
@@ -179,6 +197,7 @@ public class Differentialdb extends SubsystemBase {
   public double getTurnRate() {
     return -gyro.getRate();
   }
+  
 
   }
 

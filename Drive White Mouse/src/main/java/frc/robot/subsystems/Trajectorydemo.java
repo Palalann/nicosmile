@@ -14,6 +14,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.Trajectory.State;
+import edu.wpi.first.math.trajectory.Trajectory;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -67,10 +69,17 @@ public class Trajectorydemo extends SubsystemBase {
       new TrajectoryConfig(3, 4));
 
     var concat = trajectory1.concatenate(trajectory2).concatenate(trajectory3);
+
+    double duration = concat.getTotalTimeSeconds();
+    Trajectory.State point = concat.sample(1.2);
+
   }
+  
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    // Get the total time of the trajectory in seconds
+
   }
 }
