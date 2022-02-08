@@ -109,4 +109,74 @@ public final class Constants {
         public static final double endVelo1 = 2;
         public static final double endVelo2 = 4;
     }
+    public static final class PATH2{
+        public static final double start2_x = 2.0;
+        public static final double start2_y = -5.2296;
+        public static final double start2_thetha = 0;
+
+        public static final double end2_x = 5.259754110694355;
+        public static final double end2_y = -6.233897531790321;
+        public static final double end2_thetha = -0.5318410055804588;
+
+        public static final double point21_x = 2.642536530601042;
+        public static final double point21_y = -5.506115103101271;
+        
+
+        public static final double point22_x = 3.244356615863141;
+        public static final double point22_y = -5.758039789955173;
+
+        public static final double point23_x = 4.210067915469764;
+        public static final double point23_y = -5.268186232183697;
+        
+        public static final double point24_x = 4.853875448540847;
+        public static final double point24_y = -5.282182048120024;
+
+        public static final double point25_x = 5.343729006312322;
+        public static final double point25_y = -5.66006907840088;
+
+        public static final boolean isReverse2 = true;
+        
+    }
+    public static final class PATH1{
+        public static final double start1_x = 6.0;
+        public static final double start1_y = -3.2295999999999996;
+        public static final double start1_thetha = 0;
+
+        public static final double end1_x = 2.0;
+        public static final double end1_y = -5.2296;
+        public static final double end1_thetha = -0.0;
+
+        public static final double point11_x = 4.503980050132651;
+        public static final double point11_y = -3.1688138417345164;
+
+        public static final double point12_x = 3.090402640563534;
+        public static final double point12_y = -3.5327050560790414;
+
+        public static final double point13_x = 1.5228712556948119;
+        public static final double point13_y = -4.050550245723172;
+
+        public static final double point14_x = 0.9770344341780249;
+        public static final double point14_y = -4.820320122221204;
+
+        public static final boolean isReverse1 = true;
+        
+    }
+    public static final class PATH3{
+        public static final double start3_x = 1;
+        public static final double start3_y = 1;
+        public static final double start3_thetha = 1;
+
+        public static final double end3_x = 1;
+        public static final double end3_y = 1;
+        public static final double end3_thetha = 1;
+
+        public static final double point31_x = 1;
+        public static final double point31_y = 1;
+
+        public static final double point32_x = 1;
+        public static final double point32_y = 1;
+
+        public static final boolean isReverse3 = true;
+        
+    }
 }
