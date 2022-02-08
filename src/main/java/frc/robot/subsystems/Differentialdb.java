@@ -36,10 +36,8 @@ import static frc.robot.Constants.DIFFDRIVE.*;
 import static frc.robot.Constants.MEASUREMENT.*;
 import static frc.robot.Constants.Joystick.*;
 import static frc.robot.Constants.PiAiDi.*;
-import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import frc.robot.subsystems.Gyro;
 
 public class Differentialdb extends SubsystemBase {
   /** Creates a new Drivetrain. */
@@ -55,7 +53,7 @@ public class Differentialdb extends SubsystemBase {
   public static final Encoder leftEncoder = new Encoder(0, 1);
   public static final Encoder rightEncoder = new Encoder(2, 3);
   //Gyro
-  public static final AHRS gyro = new AHRS();
+  public static final AnalogGyro gyro = new AnalogGyro(0);
   //Piaidi
   public static final PIDController leftPID = new PIDController(kPL, kIL, kDL);
   public static final PIDController rightPID = new PIDController(kPR, kIR, kDR);
@@ -63,8 +61,7 @@ public class Differentialdb extends SubsystemBase {
   public final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(TRACKWIDTH));
   //Odometry
   //Get the initial place of the bot
-  private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
- 
+  private final DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(gyro.getRotation2d()); 
   //Diferential
   private final DifferentialDrive drive = new DifferentialDrive(leftGroup, rightGroup);
  
@@ -75,9 +72,6 @@ public class Differentialdb extends SubsystemBase {
 
   private final SlewRateLimiter m_speedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
-
-  //Pose2d, Store new pose from odometry updating
-  Pose2d pose;
 
   
   
@@ -123,7 +117,7 @@ public class Differentialdb extends SubsystemBase {
 
   @Override
   public void periodic() {
-      pose = odometry.update(gyro.getRotation2d(), 
+      odometry.update(gyro.getRotation2d(), 
                       leftEncoder.getDistance(), rightEncoder.getDistance());
       // Get the x speed. We are inverting this because controllers return
     // negative values when we push forward.

@@ -27,9 +27,6 @@ import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.AutoConstants.*;
 import static frc.robot.Constants.MEASUREMENT.*;
 import static frc.robot.Constants.RAMSETE.*;
-import static frc.robot.Constants.TRAJECTORY.*;
-
-import java.util.ArrayList;
 import java.util.List;
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -75,30 +72,28 @@ public class RobotContainer {
       kinematics, 10);
 
     // Create config for trajectory
-        TrajectoryConfig config = new TrajectoryConfig(maxVelo, maxAcce);
-            config.setReversed(true);
-            config.setStartVelocity(startVelo);
-            config.setEndVelocity(endVelo1);
-    
+    TrajectoryConfig config =
+        new TrajectoryConfig(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared)
             // Add kinematics to ensure max speed is actually obeyed
-            config.setKinematics(kinematics);
+            .setKinematics(kinematics)
             // Apply the voltage constraint
-            config .addConstraint(autoVoltageConstraint);
+            .addConstraint(autoVoltageConstraint);
 
     // An example trajectory to follow.  All units in meters.
-    //Traj 1
-    var start = new Pose2d(1.2, 5.6, Rotation2d.fromDegrees(-180));
-    var end = new Pose2d(23.3, 6.8, Rotation2d.fromDegrees(-160));
-
-    var waypoints = new ArrayList<Translation2d>();
-    waypoints.add(new Translation2d(2.2, 5.5));
-    waypoints.add(new Translation2d(23, 18));
-    
-    var trajectory1 = TrajectoryGenerator.generateTrajectory(start, waypoints, end, config);
+    Trajectory exampleTrajectory =
+        TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            new Pose2d(0, 0, new Rotation2d(0)),
+            // Pass through these two interior waypoints, making an 's' curve path
+            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+            // End 3 meters straight ahead of where we started, facing forward
+            new Pose2d(3, 0, new Rotation2d(0)),
+            // Pass config
+            config);
 
     RamseteCommand ramseteCommand =
         new RamseteCommand(
-            trajectory1,
+            exampleTrajectory,
             drivetrain::getPose,
             new RamseteController(kRamseteB, kRamseteZeta),
             new SimpleMotorFeedforward(
@@ -111,7 +106,7 @@ public class RobotContainer {
             drivetrain);
 
     // Reset odometry to the starting pose of the trajectory.
-    drivetrain.resetOdometry(trajectory1.getInitialPose());
+    drivetrain.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
     return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
