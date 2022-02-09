@@ -130,6 +130,8 @@ public class RobotContainer {
 
 
     ////////////////////////////////////////////////////////
+    RamseteController m_disabledRamsete = new RamseteController();
+    m_disabledRamsete.setEnabled(false);
     RamseteCommand ramseteCommand =
         new RamseteCommand(
             concat,
@@ -143,6 +145,7 @@ public class RobotContainer {
             // RamseteCommand passes volts to the callback
             drivetrain::tankDriveVolts,
             drivetrain);
+            
 
     // Reset odometry to the starting pose of the trajectory.
     drivetrain.resetOdometry(concat.getInitialPose());
@@ -151,6 +154,8 @@ public class RobotContainer {
     return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
  
  }
+ 
+
 
 }
 

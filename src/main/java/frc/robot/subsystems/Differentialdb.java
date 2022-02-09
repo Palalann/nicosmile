@@ -100,10 +100,10 @@ public class Differentialdb extends SubsystemBase {
     final double leftFeedforward = feedforward.calculate(speeds.leftMetersPerSecond);
     final double rightFeedforward = feedforward.calculate(speeds.rightMetersPerSecond);
 
-    final double leftOutput = leftPID.calculate(leftEncoder.getRate(), speeds.leftMetersPerSecond);
-    final double rightOutput = rightPID.calculate(rightEncoder.getRate(), speeds.rightMetersPerSecond);
-    leftGroup.setVoltage(leftOutput + leftFeedforward);
-    rightGroup.setVoltage(rightOutput + rightFeedforward);
+    final double leftFeedbackward = leftPID.calculate(leftEncoder.getRate(), speeds.leftMetersPerSecond);
+    final double rightFeedbackward = rightPID.calculate(rightEncoder.getRate(), speeds.rightMetersPerSecond);
+    leftGroup.setVoltage(leftFeedbackward + leftFeedforward);
+    rightGroup.setVoltage(rightFeedbackward + rightFeedforward);
   }
    
   public void drive(double xSpeed, double rot) { 
@@ -197,6 +197,8 @@ public class Differentialdb extends SubsystemBase {
   public double getTurnRate() {
     return -gyro.getRate();
   }
+ 
+
   
 
   }
